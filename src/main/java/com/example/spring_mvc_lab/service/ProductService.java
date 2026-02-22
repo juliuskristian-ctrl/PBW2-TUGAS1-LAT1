@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -53,6 +55,38 @@ public class ProductService {
     public List<Product> getAllProducts() {
         return products;
     }
+    public Map<String, Object> getStatistics() {
+        Map<String, Object> stats = new HashMap<>();
 
+        // Total semua produk
+        stats.put("totalProducts", products.size());
+
+        // Total produk per kategori
+        Map<String, Long> categorySummary = products.stream()
+                .collect(Collectors.groupingBy(Product::getCategory, Collectors.counting()));
+        stats.put("categorySummary", categorySummary);
+
+        // Produk termahal
+        Product expensive = products.stream()
+                .max(Comparator.comparing(Product::getPrice)).orElse(null);
+        stats.put("expensive", expensive);
+
+        // Produk termurah
+        Product cheapest = products.stream()
+                .min(Comparator.comparing(Product::getPrice)).orElse(null);
+        stats.put("cheapest", cheapest);
+
+        // Rata-rata harga
+        double avgPrice = products.stream()
+                .mapToDouble(Product::getPrice).average().orElse(0.0);
+        stats.put("avgPrice", avgPrice);
+
+        // Jumlah produk dengan stok < 20
+        long lowStockCount = products.stream()
+                .filter(p -> p.getStock() < 20).count();
+        stats.put("lowStockCount", lowStockCount);
+
+        return stats;
+    }
 
 }
