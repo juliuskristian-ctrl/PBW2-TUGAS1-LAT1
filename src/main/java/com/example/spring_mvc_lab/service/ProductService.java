@@ -44,4 +44,15 @@ public class ProductService {
                 .filter(p -> p.getName().toLowerCase().contains(lowerKeyword))
                 .toList();
     }
+    public List<String> getAllCategories() {
+        return products.stream()
+                .map(Product::getCategory)
+                .distinct()
+                .toList();
+    }
+    public List<Product> getAllProducts() {
+        return products;
+    }
+
+
 }

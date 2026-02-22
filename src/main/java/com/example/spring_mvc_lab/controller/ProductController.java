@@ -79,4 +79,10 @@ public class ProductController {
 
         return "product/list";  // reuse template yang sama!
     }
+    @GetMapping("/products/categories")
+    public String getCategorySummary(Model model) {
+        model.addAttribute("categories", productService.getAllCategories());
+        model.addAttribute("allProducts", productService.getAllProducts());
+        return "category-summary";
+    }
 }
